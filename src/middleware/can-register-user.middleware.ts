@@ -2,9 +2,10 @@ import { NextFunction, Response } from "express";
 import jwt from 'jsonwebtoken'
 
 import prisma from "../prisma-client";
-import { CustomRequest } from "../interfaces/custom-request.interface";
+import { CustomRequest } from "../types/interfaces/custom-request.interface";
 import { asyncHandler } from "../utils/async-handler";
-import { HttpError } from "../errors/http-error";
+import { HttpError } from "../types/errors/http-error";
+
 
 export const canRegisterUserMiddleware = (requiredRole?: 'register-admin') => {
 	return asyncHandler(async (req: CustomRequest, res: Response, next: NextFunction) => {

@@ -3,8 +3,8 @@ import exceljs from 'exceljs';
 import { promises } from 'fs';
 
 import { downloadExcel, uploadExcel } from './google-drive-service';
-import { CustomRequest } from '../interfaces/custom-request.interface';
-import { HttpError } from '../errors/http-error';
+import { CustomRequest } from '../types/interfaces/custom-request.interface';
+import { HttpError } from '../types/errors/http-error';
 
 export async function modificaExcel(req: CustomRequest) {
     if (req.fileId) {

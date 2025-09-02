@@ -1,46 +1,15 @@
-import express, { Response } from "express";
+import express from "express";
 
-import prisma from "../prisma-client"
-import { CustomRequest } from "../interfaces/custom-request.interface";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { asyncHandler } from "../utils/async-handler";
-import { HttpError } from "../errors/http-error";
+import { getUsers, hasUser } from "../controllers/user-controller";
+
 
 const router = express.Router();
 
 // questa rotta può essere chiamata senza middleware, necessario per verificare lato frontend il reindirizzamento verso la pagina di registrazione
 // nel caso non ci siano ancora utenti registrati sulla tabella user
-router.get(
-	'/has-user',
-	asyncHandler(async (req: CustomRequest, res: Response) => {
-		try {
-			const count = await prisma.user.count();
-			res.json({ hasUser: count > 0 })
-		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Errore del server'
-			throw new HttpError(message, 500);
-		}
-	})
-)
-
-router.get(
-	'/get-users',
-	authMiddleware,
-	asyncHandler(async (req: CustomRequest, res: Response) => {
-		try {
-			// TODO filtrare per utenti con solo role user?
-			const users = await prisma.user.findMany({
-				select: {
-					id: true,
-					name: true,
-				}
-			});
-			res.json({ users })
-		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Errore del server'
-			throw new HttpError(message, 500);
-		}
-	})
-)
+router.get('/has-user', asyncHandler(hasUser))
+router.get('/get-users', authMiddleware, asyncHandler(getUsers))
 
 export default router;

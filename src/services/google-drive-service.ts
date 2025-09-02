@@ -1,6 +1,6 @@
 import { google } from "googleapis";
 import { createWriteStream, createReadStream } from 'fs';
-import { HttpError } from "../errors/http-error";
+import { HttpError } from "../types/errors/http-error";
 
 // ----------- AUTH GOOGLE -------------------
 const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS) : '';
