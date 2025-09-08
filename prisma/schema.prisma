@@ -12,37 +12,91 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// eventualmente aggiungere in futuro ruoli come HR, Commerciale, Team Leader, Area manager, ecc
 enum Role {
-  admin
-  user
+  ADMIN
+  USER
 }
 
 model User {
-  id                 String      @id @default(uuid())
+  id                 String       @id @default(nanoid(16))
   name               String
-  email              String      @unique
+  lastname           String
+  email              String       @unique
   password           String
-  mustChangePassword Boolean     @default(true)
-  fileId             String?     // google drive fileId
-  role               Role        @default(user)
-  // se db vuoto il primo utente sarà admin, 
-  // admin può aggiungere user e vedere la tabella dei resoconti degli utenti
-  // user può solo inserire resoconti
-  Resoconto          Resoconto[]
+  mustChangePassword Boolean      @default(true)
+  fileId             String? // google drive fileId
+  role               Role         @default(USER)
+  workProfile        WorkProfile?
+  report             Report[]
 }
 
-model Resoconto {
-  id                 String   @id @default(uuid())
-  dataInizio         String
-  dataFine           String
-  tipoAttivita       String
-  attivita           String
-  descrizione        String
-  personaRiferimento String
-  cliente            String
-  colleghiSI         String?
-  note               String?
-  createdAt          DateTime @default(now())
-  userId             String
-  user               User     @relation(fields: [userId], references: [id])
+model WorkProfile {
+  id                   String    @id @default(nanoid(16))
+  hiringDate           DateTime  @db.Date
+  courseFrom           DateTime? @db.Date // YYYY-MM-DD
+  courseTo             DateTime? @db.Date
+  referencePerson      String?
+  programmingLanguages String[] // ["Javascript", "Typescript", "Java"]
+  frontendTechnologies String[] // ["Angular", "Angular material", "RxJs", "NgRx", "Vue", "Pinia"]
+  backendTechnologies  String[] // ["Spring", "Hibernate"]
+  databases            String[] // ["Postgres", "MongoDB"]
+  softwareUsed         String[] // ["Visual Studio Code", "Postman", "Eclipse", "Git"]
+  foreignLanguages     Json      @db.JsonB // [{ "lingua": "inglese", "parlato": 3, "scritto": 4 }]
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id])
+  officeId             String
+  office               Office    @relation(fields: [officeId], references: [id])
+}
+
+model Report {
+  id              String   @id @default(nanoid(16))
+  startDate       DateTime @db.Date // YYYY-MM-DD
+  endDate         DateTime @db.Date // YYYY-MM-DD
+  activityType    String
+  activity        String
+  description     String
+  referencePerson String
+  customer        String
+  colleaguesSI    String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+}
+
+model Office {
+  id          String        @id @default(nanoid(16))
+  office      String        @unique
+  workProfile WorkProfile[]
+}
+
+model ProgrammingLanguages {
+  id   String @id @default(nanoid(16))
+  name String @unique // Javascript, Typescript, Java, Python, ecc
+}
+
+model FrontendTechnologies {
+  id   String @id @default(nanoid(16))
+  name String @unique // Angular, Angular material, Bootstrap, RxJs, NgRx, Vue, Pinia, ecc
+}
+
+model BackendTechnologies {
+  id   String @id @default(nanoid(16))
+  name String @unique // Spring, Hibernate, Express, ecc
+}
+
+model Database {
+  id   String @id @default(nanoid(16))
+  name String @unique // Postgres, MySql, MongoDB, ecc
+}
+
+model SoftwareUsed {
+  id   String @id @default(nanoid(16))
+  name String @unique // Visual Studio Code, Eclipse, Postman, ecc
+}
+
+model Language {
+  id   String @id @default(nanoid(16))
+  name String @unique // Inglese, Spagnolo, ecc
 }

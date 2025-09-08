@@ -5,6 +5,7 @@ import prisma from "../prisma-client";
 import { CustomRequest } from "../types/interfaces/custom-request.interface";
 import { asyncHandler } from "../utils/async-handler";
 import { HttpError } from "../types/errors/http-error";
+import { Role } from "@prisma/client";
 
 
 export const canRegisterUserMiddleware = (requiredRole?: 'register-admin') => {
@@ -33,7 +34,7 @@ export const canRegisterUserMiddleware = (requiredRole?: 'register-admin') => {
 			const decoded = jwt.verify(token, jwtSecret) as { id: string };
 
 			const user = await prisma.user.findUnique({ where: { id: decoded.id } });
-			if (!user || user.role !== 'admin') {
+			if (!user || user.role !== Role.ADMIN) {
 				throw new HttpError('Non autorizzato', 403);
 			}
 
