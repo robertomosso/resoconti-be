@@ -2,11 +2,11 @@ import { z } from "zod";
 
 const dominio = process.env.DOMINIO || '';
 
-export const registerAdminSchema = z.object({
-    nome: z
+export const registerFirstUserSchema = z.object({
+    name: z
         .string()
         .min(3, "Il nome è obbligatorio"),
-    cognome: z
+    lastname: z
         .string()
         .min(3, "Il cognome è obbligatorio"),
     email: z
@@ -15,18 +15,20 @@ export const registerAdminSchema = z.object({
         .refine(email => email.endsWith(dominio), {
             message: 'Email non valida',
         }),
+    password: z
+        .string()
+        .min(8)
+        .max(16),
     fileId: z
         .string()
         .optional(),
-    role: z
-        .literal('admin'),
 });
 
 export const registerUserSchema = z.object({
-    nome: z
+    name: z
         .string()
         .min(3, "Il nome è obbligatorio"),
-    cognome: z
+    lastname: z
         .string()
         .min(3, "Il cognome è obbligatorio"),
     email: z
@@ -35,9 +37,11 @@ export const registerUserSchema = z.object({
         .refine(email => email.endsWith(dominio), {
             message: 'Email non valida',
         }),
+    role: z
+        .enum(['ADMIN', 'USER']),
     fileId: z
-        .string(),
-    // non dovrebbe servire settare il role in quanto è impostato di default a true su schema.prisma
+        .string()
+        .optional(),
 });
 
 export const loginSchema = z.object({
@@ -70,76 +74,78 @@ export const changePasswordSchema = z.object({
         .max(16),
 });
 
-const linguaSchema = z.object({
-    lingua: z
+const languageSchema = z.object({
+    language: z
         .string()
         .min(1, "Il nome della lingua è obbligatorio"),
-    parlato: z
+    spoken: z
         .number()
         .int()
         .min(1)
         .max(5),
-    scritto: z
+    written: z
         .number()
         .int()
         .min(1)
         .max(5),
 });
 
-export const profiloLavorativoSchema = z.object({
-    sede: z
+export const workProfileSchema = z.object({
+    office: z
         .enum(['PESCARA', 'TERAMO', 'ROMA', 'MILANO', 'TORINO', 'MESSINA'])
         .optional(),
-    dataAssunzione: z
+    hiringDate: z
         .date()
         .optional(),
-    corsoDal: z
+    courseFrom: z
         .date()
         .optional(),
-    corsoAl: z
+    courseTo: z
         .date()
         .optional(),
-    referente: z
+    referencePerson: z
         .string()
         .optional(),
-    linguaggiProgrammazione: z
+    programmingLanguages: z
         .array(z.string()),
-    tecnologieFrontend: z
+    frontendTechnologies: z
         .array(z.string()),
-    tecnologieBackend: z
+    backendTechnologies: z
         .array(z.string()),
-    database: z
+    databases: z
         .array(z.string()),
-    softwareUtilizzati: z
+    softwareUsed: z
         .array(z.string()),
-    lingueStraniere: z
-        .array(linguaSchema)
+    foreignLanguages: z
+        .array(languageSchema)
 });
 
-export const resocontoSchema = z.object({
-    dataInizio: z
-        .date(),
-    dataFine: z
-        .date(),
-    tipoAttivita: z
+export const reportSchema = z.object({
+    startDate: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/), // accetta solo yyyy-mm-dd
+    endDate: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/),
+    activityType: z
         .string(),
-    attivita: z
+    activity: z
         .string()
         .max(100),
-    descrizione: z
+    description: z
         .string()
         .max(500),
-    personaRiferimento: z
+    referencePerson: z
         .string()
         .max(100),
-    cliente: z
+    customer: z
         .string()
         .max(100),
-    colleghiSI: z
+    colleaguesSI: z
         .string()
         .max(500)
         .optional(),
-    note: z
+    notes: z
         .string()
         .max(500)
         .optional(),

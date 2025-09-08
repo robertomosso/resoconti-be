@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { Role } from '@prisma/client';
 
 import prisma from "../prisma-client"
 import { HttpError } from '../types/errors/http-error';
@@ -7,35 +8,59 @@ import { HttpError } from '../types/errors/http-error';
 
 const dominio = process.env.DOMINIO || '';
 
-interface RegisterParams {
+interface RegisterFirstUserParams {
     name: string;
     lastname: string;
     email: string;
+    password: string,
     fileId?: string;
-    role: string;
 }
 
-export const register = async ({ name, lastname, email, fileId, role }: RegisterParams) => {
-    if (!name || !lastname || !email?.includes(dominio) || (role === 'USER' && !fileId)) {
+interface RegisterUserParams {
+    name: string;
+    lastname: string;
+    email: string;
+    role: Role;
+    fileId?: string;
+}
+
+export const registerFirstUser = async ({ name, lastname, email, password, fileId }: RegisterFirstUserParams) => {
+    if (!name || !lastname || !email?.includes(dominio) || !password) {
         throw new HttpError('Dati inseriti non validi', 400);
     }
 
-    const password = process.env.DEFAULT_PASSWORD || 'changeme';
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
         data: {
             name,
             lastname,
             email,
             password: hashedPassword,
             fileId,
-            role: 'ADMIN',
+            role: Role.ADMIN,
         }
     });
+}
 
-    const { id } = user;
-    return id;
+export const registerUser = async ({ name, lastname, email, role, fileId }: RegisterUserParams) => {
+    if (!name || !lastname || !email?.includes(dominio) || (role === Role.USER && !fileId)) {
+        throw new HttpError('Dati inseriti non validi', 400);
+    }
+
+    const password = process.env.DEFAULT_PASSWORD || 'changeme';
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.user.create({
+        data: {
+            name,
+            lastname,
+            email,
+            password: hashedPassword,
+            fileId,
+            role,
+        },
+    });
 }
 
 export const login = async (email: string, password: string) => {

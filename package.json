@@ -1,6 +1,6 @@
 {
   "name": "resoconti-settimanali-be",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --ext ts --exec ts-node src/server.ts",
@@ -10,11 +10,11 @@
     "startPrisma": "npx prisma migrate deploy && node dist/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Roberto Mosso",
   "license": "ISC",
-  "description": "",
+  "description": "Software gestionela per l'inserimento dei resoconti settimanali dell'attività dei dipendenti",
   "dependencies": {
-    "@prisma/adapter-neon": "^6.9.0",
+    "@prisma/adapter-neon": "^6.15.0",
     "@prisma/client": "^6.15.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",

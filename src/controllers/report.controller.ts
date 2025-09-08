@@ -4,6 +4,7 @@ import prisma from "../prisma-client"
 import { CustomRequest } from "../types/interfaces/custom-request.interface";
 import { HttpError } from "../types/errors/http-error";
 import { excelModify } from "../services/excel.service";
+import { formatDateToUsDate, toUtcDate } from "../utils/date-formatter";
 
 
 export const getLastReport = async (req: CustomRequest, res: Response) => {
@@ -23,11 +24,16 @@ export const getLastReport = async (req: CustomRequest, res: Response) => {
     });
 
     if (lastReport) {
-        res.status(200).json({ report: lastReport });
+        const report = {
+            ...lastReport,
+            startDate: formatDateToUsDate(lastReport.startDate),
+            endDate: formatDateToUsDate(lastReport.endDate),
+        };
+
+        res.status(200).json({ report });
     } else {
         res.status(404).json({ message: 'Resoconto non trovato' });
     }
-
 }
 
 export const postReport = async (req: CustomRequest, res: Response) => {
@@ -39,11 +45,19 @@ export const postReport = async (req: CustomRequest, res: Response) => {
 
     // TODO da verificare se continuerà a servire in futuro
     // viene avviato il processo di modifica del file excel presente su drive
-    await excelModify(req);
+    // ! await excelModify(req);
+
+    const startDateIso = toUtcDate(req.body.startDate);
+    const endDateIso = toUtcDate(req.body.endDate);
 
     // viene salvato a db il resoconto, solo nel caso la modifica dell'excel sia andata a buon fine
     await prisma.report.create({
-        data: { ...req.body, userId: req.userId }
+        data: {
+            ...req.body,
+            startDate: startDateIso,
+            endDate: endDateIso,
+            userId: req.userId
+        }
     });
 
     res.status(201).json({ message: 'Inserimento avvenuto con successo' });
@@ -61,5 +75,11 @@ export const getUserReports = async (req: CustomRequest, res: Response) => {
         }
     });
 
-    res.status(200).json({ reports: result });
+    const reports = result.map(r => ({
+        ...r,
+        startDate: formatDateToUsDate(r.startDate),
+        endDate: formatDateToUsDate(r.endDate),
+    }));
+
+    res.status(200).json({ reports: reports });
 }

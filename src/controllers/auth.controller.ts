@@ -1,26 +1,20 @@
 import { Request, Response } from "express";
 
-import { changePassword, login, register } from "../services/auth.service";
+import { changePassword, login, registerFirstUser, registerUser } from "../services/auth.service";
 
 
-export const registerAdminController = async (req: Request, res: Response) => {
-    const { name, lastname, email, fileId } = req.body;
-    const userId = register({ name, lastname, email, fileId, role: 'ADMIN' });
-
-    res.status(200).json({
-        message: 'Registrazione effettuata con successo',
-        userId,
-    });
+export const registerFirstUserController = async (req: Request, res: Response) => {
+    const { name, lastname, email, password, fileId } = req.body;
+    await registerFirstUser({ name, lastname, email, password, fileId });
+    
+    res.status(200).json({ message: 'Registrazione effettuata con successo' });
 }
 
 export const registerUserController = async (req: Request, res: Response) => {
-    const { name, lastname, email, fileId } = req.body;
-    const userId = register({ name, lastname, email, fileId, role: 'USER' });
+    const { name, lastname, email, role, fileId } = req.body;
+    await registerUser({ name, lastname, email, role, fileId });
 
-    res.status(200).json({
-        message: 'Registrazione effettuata con successo',
-        userId,
-    });
+    res.status(200).json({ message: 'Registrazione effettuata con successo' });
 }
 
 export const loginController = async (req: Request, res: Response): Promise<void> => {

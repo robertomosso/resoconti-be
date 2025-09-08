@@ -5,6 +5,7 @@ import { promises } from 'fs';
 import { downloadExcel, uploadExcel } from './google-drive.service';
 import { CustomRequest } from '../types/interfaces/custom-request.interface';
 import { HttpError } from '../types/errors/http-error';
+import { toUtcDate } from '../utils/date-formatter';
 
 
 export async function excelModify(req: CustomRequest) {
@@ -38,8 +39,8 @@ export async function appendRowToExcel(filePath: string, values: any) {
 	const newRowNumber = lastUsedRowNumber + 1;
 	const newRow = lastSheet.getRow(newRowNumber);
 
-	const dataInizio = new Date(values.dataInizio);
-	const dataFine = new Date(values.dataFine);
+	const dataInizio = toUtcDate(values.dataInizio);
+	const dataFine = toUtcDate(values.dataFine);
 	newRow.values = [
 		dataInizio,
 		dataFine,
