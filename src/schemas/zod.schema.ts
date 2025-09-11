@@ -151,5 +151,5 @@ export const reportSchema = z.object({
         .optional(),
     userId: z
         .string()
-        .uuid(),
+        .length(21, "userId deve essere un nanoid valido"),
 })

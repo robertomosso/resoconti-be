@@ -3,7 +3,6 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -19,7 +18,7 @@ enum Role {
 }
 
 model User {
-  id                 String       @id @default(uuid())
+  id                 String       @id @default(nanoid())
   name               String
   lastname           String
   email              String       @unique
@@ -31,8 +30,10 @@ model User {
   report             Report[]
 }
 
+// TODO connettere tramite fk lookup tables (come office, tabelle many to many?)
 model WorkProfile {
-  id                   String    @id @default(uuid())
+  id                   String    @id @default(nanoid())
+  office               String
   hiringDate           DateTime  @db.Date
   courseFrom           DateTime? @db.Date // YYYY-MM-DD
   courseTo             DateTime? @db.Date
@@ -42,15 +43,13 @@ model WorkProfile {
   backendTechnologies  String[] // ["Spring", "Hibernate"]
   databases            String[] // ["Postgres", "MongoDB"]
   softwareUsed         String[] // ["Visual Studio Code", "Postman", "Eclipse", "Git"]
-  foreignLanguages     Json      @db.JsonB // [{ "lingua": "inglese", "parlato": 3, "scritto": 4 }]
+  foreignLanguages     String[] // ["Inglese|Avanzato", "Spagnolo|Base"]
   userId               String    @unique
   user                 User      @relation(fields: [userId], references: [id])
-  officeId             String
-  office               Office    @relation(fields: [officeId], references: [id])
 }
 
 model Report {
-  id              String   @id @default(uuid())
+  id              String   @id @default(nanoid())
   startDate       DateTime @db.Date // YYYY-MM-DD
   endDate         DateTime @db.Date // YYYY-MM-DD
   activityType    String
@@ -66,37 +65,36 @@ model Report {
 }
 
 model Office {
-  id          String        @id @default(uuid())
-  office      String        @unique
-  workProfile WorkProfile[]
+  id   String @id @default(nanoid())
+  name String @unique // Pescara, Teramo, Torino, ecc
 }
 
 model ProgrammingLanguages {
-  id   String @id @default(uuid())
+  id   String @id @default(nanoid())
   name String @unique // Javascript, Typescript, Java, Python, ecc
 }
 
 model FrontendTechnologies {
-  id   String @id @default(uuid())
+  id   String @id @default(nanoid())
   name String @unique // Angular, Angular material, Bootstrap, RxJs, NgRx, Vue, Pinia, ecc
 }
 
 model BackendTechnologies {
-  id   String @id @default(uuid())
+  id   String @id @default(nanoid())
   name String @unique // Spring, Hibernate, Express, ecc
 }
 
 model Database {
-  id   String @id @default(uuid())
+  id   String @id @default(nanoid())
   name String @unique // Postgres, MySql, MongoDB, ecc
 }
 
 model SoftwareUsed {
-  id   String @id @default(uuid())
+  id   String @id @default(nanoid())
   name String @unique // Visual Studio Code, Eclipse, Postman, ecc
 }
 
-model Language {
-  id   String @id @default(uuid())
-  name String @unique // Inglese, Spagnolo, ecc
+model ForeignLanguageLevel {
+  id   String @id @default(nanoid())
+  name String @unique // "Inglese|Avanzato", "Inglese|Intermedio", "Inglese|Base", "Spagnolo|Avanzato", ecc
 }

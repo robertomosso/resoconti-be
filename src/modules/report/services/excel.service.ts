@@ -3,9 +3,9 @@ import exceljs from 'exceljs';
 import { promises } from 'fs';
 
 import { downloadExcel, uploadExcel } from './google-drive.service';
-import { CustomRequest } from '../types/interfaces/custom-request.interface';
-import { HttpError } from '../types/errors/http-error';
-import { toUtcDate } from '../utils/date-formatter';
+import { CustomRequest } from '../../../types/interfaces/custom-request.interface';
+import { HttpError } from '../../../types/errors/http-error';
+import { toUtcDate } from '../../../utils/date-formatter';
 
 
 export async function excelModify(req: CustomRequest) {

@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Role } from '@prisma/client';
 
-import prisma from "../prisma-client"
-import { HttpError } from '../types/errors/http-error';
+import prisma from "../../prisma-client"
+import { HttpError } from '../../types/errors/http-error';
 
 
 const dominio = process.env.DOMINIO || '';
@@ -25,10 +25,6 @@ interface RegisterUserParams {
 }
 
 export const registerFirstUser = async ({ name, lastname, email, password, fileId }: RegisterFirstUserParams) => {
-    if (!name || !lastname || !email?.includes(dominio) || !password) {
-        throw new HttpError('Dati inseriti non validi', 400);
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
@@ -44,10 +40,6 @@ export const registerFirstUser = async ({ name, lastname, email, password, fileI
 }
 
 export const registerUser = async ({ name, lastname, email, role, fileId }: RegisterUserParams) => {
-    if (!name || !lastname || !email?.includes(dominio) || (role === Role.USER && !fileId)) {
-        throw new HttpError('Dati inseriti non validi', 400);
-    }
-
     const password = process.env.DEFAULT_PASSWORD || 'changeme';
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -64,10 +56,6 @@ export const registerUser = async ({ name, lastname, email, role, fileId }: Regi
 }
 
 export const login = async (email: string, password: string) => {
-    if (!email?.includes(dominio) || !password) {
-        throw new HttpError('Dati inseriti non validi', 400);
-    }
-
     const user = await prisma.user.findUnique({
         where: { email }
     })
@@ -106,10 +94,6 @@ export const changePassword = async (
     currentPassword: string,
     newPassword: string
 ) => {
-    if (!email.includes(dominio) || !currentPassword || !newPassword) {
-        throw new HttpError('Dati inseriti non validi', 400);
-    }
-
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
         throw new HttpError('Utente non trovato', 404);

@@ -1,14 +1,15 @@
 import 'dotenv/config';
 import express from "express";
 
-import { authMiddleware } from "./middleware/auth.middleware";
-import { securityMiddleware } from './middleware/security.middleware';
-import { authRateLimiter, globalRateLimiter } from './middleware/rate-limiter.middleware';
-import { loggerMiddleware } from './middleware/logger.middleware';
-import { errorLoggerMiddleware } from './middleware/error-logger.middleware';
-import authRoutes from './routes/auth.routes'
-import reportRoutes from './routes/report.routes'
-import usersRoutes from './routes/users.routes'
+import { authMiddleware } from "./middlewares/auth.middleware";
+import { securityMiddleware } from './middlewares/security.middleware';
+import { authRateLimiter, globalRateLimiter } from './middlewares/rate-limiter.middleware';
+import { loggerMiddleware } from './middlewares/logger.middleware';
+import { errorLoggerMiddleware } from './middlewares/error-logger.middleware';
+import authRoutes from './modules/auth/auth.routes'
+import reportRoutes from './modules/report/report.routes'
+import usersRoutes from './modules/user/users.routes'
+import lookupRoutes from './modules/lookup/lookup.routes'
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(loggerMiddleware());
 app.use('/auth', authRateLimiter, authRoutes);
 app.use('/users', usersRoutes);
 app.use('/report', authMiddleware, reportRoutes);
+app.use('/lookup', authMiddleware, lookupRoutes);
 
 app.use(errorLoggerMiddleware);
 

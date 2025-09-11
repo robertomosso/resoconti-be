@@ -1,11 +1,11 @@
 import express from "express";
 
-import { canRegisterUserMiddleware } from "../middleware/can-register-user.middleware";
-import { validateBody } from "../middleware/zod.middleware";
-import { changePasswordSchema, loginSchema, registerFirstUserSchema, registerUserSchema } from "../schemas/zod.schema";
-import { asyncHandler } from "../utils/async-handler";
-import { changePasswordController, loginController, registerFirstUserController, registerUserController } from "../controllers/auth.controller";
-import { canRegisterFirstUserMiddleware } from "../middleware/can-register-first-user.middleware";
+import { canRegisterUserMiddleware } from "../../middlewares/can-register-user.middleware";
+import { validateBody } from "../../middlewares/zod.middleware";
+import { changePasswordSchema, loginSchema, registerFirstUserSchema, registerUserSchema } from "../../schemas/zod.schema";
+import { asyncHandler } from "../../utils/async-handler";
+import { changePasswordController, loginController, registerFirstUserController, registerUserController } from "./auth.controller";
+import { canRegisterFirstUserMiddleware } from "../../middlewares/can-register-first-user.middleware";
 
 
 const router = express.Router();
