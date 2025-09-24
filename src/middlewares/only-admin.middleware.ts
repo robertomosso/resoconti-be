@@ -7,23 +7,23 @@ import { CustomRequest } from "../types/interfaces/custom-request.interface";
 import { HttpError } from "../types/errors/http-error";
 
 
-export const canRegisterUserMiddleware = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const onyAdminMiddleware = async (req: CustomRequest, res: Response, next: NextFunction) => {
 	const token = req.headers['authorization'];
 
 	if (!token) {
-		throw new HttpError('Nessun token presente', 401);
+		return next(new HttpError('Nessun token presente', 401));
 	}
 
 	const jwtSecret = process.env.JWT_SECRET;
 	if (!jwtSecret) {
-		throw new HttpError('Errore nella lettura della chiave jwt', 500);
+		return next(new HttpError('Errore nella lettura della chiave jwt', 500));
 	}
 
 	const decoded = jwt.verify(token, jwtSecret) as { id: string };
 
 	const user = await prisma.user.findUnique({ where: { id: decoded.id } });
 	if (!user || user.role !== Role.ADMIN) {
-		throw new HttpError('Non autorizzato', 403);
+		return next(new HttpError('Non autorizzato', 403));
 	}
 
 	next();

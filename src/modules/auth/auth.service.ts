@@ -79,7 +79,7 @@ export const login = async (email: string, password: string) => {
     const token = jwt.sign(
         { id: user.id, fileId: user.fileId },
         jwtSecret,
-        { expiresIn: '15m' }
+        { expiresIn: '30m' }
     );
     if (!token) {
         throw new HttpError('Errore nella generazione del token', 500);

@@ -1,5 +1,7 @@
 import prisma from "../../../prisma-client"
+import { ReportSchema } from "../../../schemas/zod.schema";
 import { formatDateToUsDate, toUtcDate } from "../../../utils/date-formatter";
+import { excelModify } from "./excel.service";
 
 
 export const getLastReport = async (userId: string) => {
@@ -25,11 +27,12 @@ export const getLastReport = async (userId: string) => {
     return report;
 }
 
-// TODO tipizzare body
-export const postReport = async (body: any, userId: string) => {
+export const postReport = async (body: ReportSchema, userId: string, fileId?: string) => {
     // da verificare se continuerà a servire in futuro
     // viene avviato il processo di modifica del file excel presente su drive
-    // ! await excelModify(req);
+    if (fileId) {
+        await excelModify(fileId, body);
+    }
 
     const startDateIso = toUtcDate(body.startDate);
     const endDateIso = toUtcDate(body.endDate);

@@ -1,5 +1,5 @@
 {
-  "name": "resoconti-settimanali-be",
+  "name": "resoconti-be",
   "version": "0.2.0",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "Roberto Mosso",
   "license": "ISC",
-  "description": "Software gestionela per l'inserimento dei resoconti settimanali dell'attività dei dipendenti",
+  "description": "Software gestionale per l'inserimento dei resoconti settimanali dell'attività dei dipendenti",
   "dependencies": {
     "@prisma/adapter-neon": "^6.15.0",
     "@prisma/client": "^6.15.0",

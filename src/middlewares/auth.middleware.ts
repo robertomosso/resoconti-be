@@ -8,17 +8,17 @@ export const authMiddleware = (req: CustomRequest, res: Response, next: NextFunc
 	const token = req.headers['authorization'];
 
 	if (!token) {
-		throw new HttpError('Nessun token presente', 401);
+		return next(new HttpError('Nessun token presente', 401));
 	}
-	
+
 	const jwtSecret = process.env.JWT_SECRET;
 	if (!jwtSecret) {
-		throw new HttpError('Errore nella lettura della chiave jwt', 500);
+		return next(new HttpError('Errore nella lettura della chiave jwt', 500));
 	}
-	
+
 	jwt.verify(token, jwtSecret, (err, decoded) => {
 		if (err) {
-			throw new HttpError('Token non valido', 401);
+			return next(new HttpError('Token non valido', 401));
 		}
 
 		// nel token inserisco sia l'id che il fileId dello user

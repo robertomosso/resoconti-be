@@ -2,7 +2,7 @@ import { Response } from "express";
 
 import { CustomRequest } from "../../types/interfaces/custom-request.interface";
 import { HttpError } from "../../types/errors/http-error";
-import { getUser, getUsers, hasUser } from "./user.service";
+import { getUser, getUsers, hasUser, searchUsers, updateUser } from "./user.service";
 
 
 export const hasUserController = async (req: CustomRequest, res: Response) => {
@@ -29,10 +29,13 @@ export const getUsersController = async (req: CustomRequest, res: Response) => {
     res.status(200).json({ users });
 }
 
-// TODO ricerca utenti per filtri (body?)
-// export const getUsersByFiltersController = async (req: CustomRequest, res: Response) => {
+export const searchUsersController = async (req: CustomRequest, res: Response) => {
+    const users = await searchUsers(req.body);
+    res.status(200).json({ users });
+}
 
-//     const body = req.body;
+export const updateUserController = async (req: CustomRequest, res: Response) => {
+    const user = await updateUser(req.body);
+    res.status(200).json({ user });
+}
 
-//     const users
-// }

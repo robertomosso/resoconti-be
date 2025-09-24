@@ -1,8 +1,10 @@
 import { z } from "zod";
+import { ForeignLanguagesEnum, OfficesEnum } from "../const"
 
 const dominio = process.env.DOMINIO || '';
 
-export const registerFirstUserSchema = z.object({
+
+export const RegisterFirstUserSchema = z.object({
     name: z
         .string()
         .min(3, "Il nome è obbligatorio"),
@@ -24,7 +26,8 @@ export const registerFirstUserSchema = z.object({
         .optional(),
 });
 
-export const registerUserSchema = z.object({
+
+export const RegisterUserSchema = z.object({
     name: z
         .string()
         .min(3, "Il nome è obbligatorio"),
@@ -44,7 +47,8 @@ export const registerUserSchema = z.object({
         .optional(),
 });
 
-export const loginSchema = z.object({
+
+export const LoginSchema = z.object({
     email: z
         .string()
         .email()
@@ -57,7 +61,8 @@ export const loginSchema = z.object({
         .max(16),
 });
 
-export const changePasswordSchema = z.object({
+
+export const ChangePasswordSchema = z.object({
     email: z
         .string()
         .email()
@@ -74,53 +79,8 @@ export const changePasswordSchema = z.object({
         .max(16),
 });
 
-const languageSchema = z.object({
-    language: z
-        .string()
-        .min(1, "Il nome della lingua è obbligatorio"),
-    spoken: z
-        .number()
-        .int()
-        .min(1)
-        .max(5),
-    written: z
-        .number()
-        .int()
-        .min(1)
-        .max(5),
-});
 
-export const workProfileSchema = z.object({
-    office: z
-        .enum(['PESCARA', 'TERAMO', 'ROMA', 'MILANO', 'TORINO', 'MESSINA'])
-        .optional(),
-    hiringDate: z
-        .date()
-        .optional(),
-    courseFrom: z
-        .date()
-        .optional(),
-    courseTo: z
-        .date()
-        .optional(),
-    referencePerson: z
-        .string()
-        .optional(),
-    programmingLanguages: z
-        .array(z.string()),
-    frontendTechnologies: z
-        .array(z.string()),
-    backendTechnologies: z
-        .array(z.string()),
-    databases: z
-        .array(z.string()),
-    softwareUsed: z
-        .array(z.string()),
-    foreignLanguages: z
-        .array(languageSchema)
-});
-
-export const reportSchema = z.object({
+export const ReportSchema = z.object({
     startDate: z
         .string()
         .regex(/^\d{4}-\d{2}-\d{2}$/), // accetta solo yyyy-mm-dd
@@ -152,4 +112,106 @@ export const reportSchema = z.object({
     userId: z
         .string()
         .length(21, "userId deve essere un nanoid valido"),
-})
+});
+export type ReportSchema = z.infer<typeof ReportSchema>;
+
+
+export const SearchUsersSchema = z.object({
+    userId: z
+        .string()
+        .length(21, "userId deve essere un nanoid valido")
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    office: z
+        .enum(Object.values(OfficesEnum) as [string, ...string[]])
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    workExperience: z
+        .string()
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    programmingLanguages: z
+        .array(z.string())
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    frontendTechnologies: z
+        .array(z.string())
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    backendTechnologies: z
+        .array(z.string())
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    databases: z
+        .array(z.string())
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    softwareUsed: z
+        .array(z.string())
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+    foreignLanguages: z
+        .array(z.enum(Object.values(ForeignLanguagesEnum) as [string, ...string[]]))
+        .or(z.literal(''))
+        .optional()
+        .nullable(),
+});
+export type SearchUsersSchema = z.infer<typeof SearchUsersSchema>;
+
+
+export const UpdateUserSchema = z.object({
+    userId: z
+        .string()
+        .length(21, "userId deve essere un nanoid valido"),
+    name: z
+        .string()
+        .min(3, "Il nome è obbligatorio"),
+    lastname: z
+        .string()
+        .min(3, "Il cognome è obbligatorio"),
+    office: z
+        .enum(Object.values(OfficesEnum) as [string, ...string[]])
+        .optional(),
+    referencePerson: z
+        .string()
+        .optional(),
+    course: z
+        .object({
+            courseFrom: z
+                .string()
+                .regex(/^\d{4}-\d{2}-\d{2}$/)
+                .or(z.literal(''))
+                .optional(),
+            courseTo: z
+                .string()
+                .regex(/^\d{4}-\d{2}-\d{2}$/)
+                .or(z.literal(''))
+                .optional(),
+        })
+        .optional(),
+    hiringDate: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/),
+    programmingLanguages: z
+        .array(z.string()),
+    frontendTechnologies: z
+        .array(z.string()),
+    backendTechnologies: z
+        .array(z.string()),
+    databases: z
+        .array(z.string()),
+    softwareUsed: z
+        .array(z.string()),
+    foreignLanguages: z
+        .array(z.enum(Object.values(ForeignLanguagesEnum) as [string, ...string[]]))
+        .optional(),
+});
+export type UpdateUserSchema = z.infer<typeof UpdateUserSchema>;

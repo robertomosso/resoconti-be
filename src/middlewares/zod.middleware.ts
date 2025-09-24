@@ -17,7 +17,7 @@ export const validateBody = (schema: ZodSchema) => {
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
       console.error('validation errors:', errors);
-      throw new HttpError('Dati inseriti non validi', 400);
+      return next(new HttpError('Dati inseriti non validi', 400));
     }
 
     req.body = result.data; // dati sanificati

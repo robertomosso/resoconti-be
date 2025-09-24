@@ -1,13 +1,17 @@
 import { PrismaClient } from '@prisma/client';
+import { ForeignLanguagesEnum, OfficesEnum } from '../src/const';
 const prisma = new PrismaClient();
 
 async function main() {
     // ProgrammingLanguages
     await prisma.office.createMany({
         data: [
-            { name: 'Torino' },
-            { name: 'Teramo' },
-            { name: 'Pescara' },
+            { name: OfficesEnum.PESCARA },
+            { name: OfficesEnum.TERAMO },
+            { name: OfficesEnum.ROMA },
+            { name: OfficesEnum.MILANO },
+            { name: OfficesEnum.TORINO },
+            { name: OfficesEnum.MESSINA },
         ],
         skipDuplicates: true,
     });
@@ -71,18 +75,18 @@ async function main() {
     // ForeignLanguageLevel
     await prisma.foreignLanguageLevel.createMany({
         data: [
-            { name: 'Inglese|Avanzato' },
-            { name: 'Inglese|Intermedio' },
-            { name: 'Inglese|Base' },
-            { name: 'Spagnolo|Avanzato' },
-            { name: 'Spagnolo|Intermedio' },
-            { name: 'Spagnolo|Base' },
-            { name: 'Francese|Avanzato' },
-            { name: 'Francese|Intermedio' },
-            { name: 'Francese|Base' },
-            { name: 'Tedesco|Avanzato' },
-            { name: 'Tedesco|Intermedio' },
-            { name: 'Tedesco|Base' },
+            { name: ForeignLanguagesEnum.INGLESE_AVANZATO },
+            { name: ForeignLanguagesEnum.INGLESE_INTERMEDIO },
+            { name: ForeignLanguagesEnum.INGLESE_BASE },
+            { name: ForeignLanguagesEnum.SPAGNOLO_AVANZATO },
+            { name: ForeignLanguagesEnum.SPAGNOLO_INTERMEDIO },
+            { name: ForeignLanguagesEnum.SPAGNOLO_BASE },
+            { name: ForeignLanguagesEnum.FRANCESE_AVANZATO },
+            { name: ForeignLanguagesEnum.FRANCESE_INTERMEDIO },
+            { name: ForeignLanguagesEnum.FRANCESE_BASE },
+            { name: ForeignLanguagesEnum.TEDESCO_AVANZATO },
+            { name: ForeignLanguagesEnum.TEDESCO_INTERMEDIO },
+            { name: ForeignLanguagesEnum.TEDESCO_BASE },
         ],
         skipDuplicates: true,
     });

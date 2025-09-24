@@ -2,8 +2,8 @@ import { Response } from "express";
 
 import { CustomRequest } from "../../types/interfaces/custom-request.interface";
 import { HttpError } from "../../types/errors/http-error";
-import { excelModify } from "./services/excel.service";
 import { getLastReport, getUserReports, postReport } from "./services/report.service";
+import { ReportSchema } from "../../schemas/zod.schema";
 
 
 export const getLastReportController = async (req: CustomRequest, res: Response) => {
@@ -28,7 +28,7 @@ export const postReportController = async (req: CustomRequest, res: Response) =>
         throw new HttpError('User id non presente', 500);
     }
 
-    await postReport(req.body, req.userId);
+    await postReport(req.body as ReportSchema, req.userId, req.fileId);
 
     res.status(201).json({ message: 'Inserimento avvenuto con successo' });
 }

@@ -3,17 +3,16 @@ import exceljs from 'exceljs';
 import { promises } from 'fs';
 
 import { downloadExcel, uploadExcel } from './google-drive.service';
-import { CustomRequest } from '../../../types/interfaces/custom-request.interface';
 import { HttpError } from '../../../types/errors/http-error';
 import { toUtcDate } from '../../../utils/date-formatter';
+import { ReportSchema } from '../../../schemas/zod.schema';
 
 
-export async function excelModify(req: CustomRequest) {
-	if (!req.fileId) {
+export async function excelModify(fileId: string, body: ReportSchema) {
+	if (!fileId) {
 		throw new HttpError('fileId non presente', 500);
 	}
 
-	const fileId = req.fileId;
 	const tempPath = path.join(__dirname, '..', '..', 'temp.xlsx');
 
 	// il file excel viene scaricato in un file temporaneo, 
@@ -21,7 +20,7 @@ export async function excelModify(req: CustomRequest) {
 	// ricaricato su drive,
 	// in ultimo il file temporaneo generato localmente viene cancellato 
 	await downloadExcel(fileId, tempPath);
-	await appendRowToExcel(tempPath, req.body);
+	await appendRowToExcel(tempPath, body);
 	await uploadExcel(fileId, tempPath);
 	await promises.unlink(tempPath);
 }
